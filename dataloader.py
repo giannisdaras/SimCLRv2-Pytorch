@@ -12,7 +12,7 @@ class ImageNetEval(Dataset):
         self.labels = []
         with open(labels_path, 'r') as f:
             for line in f.readlines():
-                self.labels.append(int(line.strip('\n')))
+                self.labels.append(int(line.strip('\n')) - 1)
         self.labels = np.array(self.labels)
         self.transform = transforms.Compose([transforms.Resize(256),
                                              transforms.CenterCrop(224),
