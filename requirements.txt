@@ -1,10 +1,10 @@
 h5py
 scipy
 Pillow
-torchvision
+torchvision==0.7.0+cu101
 tqdm
-torch
+torch==1.6.0+cu101
 requests
 numpy
 matplotlib
-tensorflow==1.15
+tensorflow-gpu==1.15
