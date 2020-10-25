@@ -8,3 +8,4 @@ requests
 numpy
 matplotlib
 tensorflow-gpu==1.15
+pyyaml

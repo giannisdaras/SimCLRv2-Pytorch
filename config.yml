@@ -1,0 +1,11 @@
+files:
+  checkpoint: r50_1x_sk1.pth
+  images_path: /Users/giannis/datasets/ILSVRC2012_img_val
+  labels_path: /Users/giannis/datasets/ILSVRC2012_validation_ground_truth.txt
+  mappings_path: null
+
+batch_size: 64
+device: 'cpu'
+
+evaluate:
+  top_k: 1
