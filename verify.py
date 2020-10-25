@@ -5,26 +5,11 @@ from collections import Counter
 import torch
 from PIL import Image
 from tqdm import tqdm
-import torchvision.transforms as transforms
 from torch.utils.data import Dataset, DataLoader
-
+from torchvision.datasets import ImageNet
 from resnet import get_resnet, name_to_params
+from dataloader import ImageNetEval
 
-
-class ImagenetValidationDataset(Dataset):
-    def __init__(self, val_path):
-        super().__init__()
-        self.val_path = val_path
-        self.transform = transforms.Compose([transforms.Resize(256), transforms.CenterCrop(224), transforms.ToTensor()])
-        with open(os.path.join(val_path, 'ILSVRC2012_validation_ground_truth.txt')) as f:
-            self.labels = [int(l) - 1 for l in f.readlines()]
-
-    def __len__(self):
-        return len(self.labels)
-
-    def __getitem__(self, item):
-        img = Image.open(os.path.join(self.val_path, f'ILSVRC2012_val_{item + 1:08d}.JPEG')).convert('RGB')
-        return self.transform(img), self.labels[item]
 
 
 def accuracy(output, target, topk=(1,)):
