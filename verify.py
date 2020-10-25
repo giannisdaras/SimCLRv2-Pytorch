@@ -9,7 +9,7 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision.datasets import ImageNet
 from resnet import get_resnet, name_to_params
 from dataloader import ImageNetEval
-
+import matplotlib.pyplot as plt
 
 
 def accuracy(output, target, topk=(1,)):
@@ -24,10 +24,18 @@ def accuracy(output, target, topk=(1,)):
     return res
 
 
+
+def plot(dataset, index):
+    image, label = dataset[index]
+    print(dataset.mappings[label])
+    plt.imshow(image.permute(1, 2, 0))
+    plt.show()
+
 @torch.no_grad()
 def run(args):
-    dataset = ImageNetEval(args.images_path, args.labels_path)
-    data_loader = DataLoader(dataset, batch_size=args.batch_size, 
+    dataset = ImageNetEval(args.images_path, args.labels_path,
+                           args.mappings_path)
+    data_loader = DataLoader(dataset, batch_size=args.batch_size,
                              shuffle=False, pin_memory=True, num_workers=8)
     model, _ = get_resnet(*name_to_params(args.pth_path))
     model.load_state_dict(torch.load(args.pth_path)['resnet'])
@@ -51,13 +59,14 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='SimCLR verifier')
-    parser.add_argument('pth_path', type=str, 
+    parser.add_argument('pth_path', type=str,
                         help='path of the input checkpoint file')
-    parser.add_argument('--device', type=str, default='cuda')
-    parser.add_argument('--images_path', type=str, 
+    parser.add_argument('--device', type=str, default='cpu')
+    parser.add_argument('--images_path', type=str,
                         default='~/datasets/ILSVRC2012_img_val')
-    parser.add_argument('--labels_path', type=str, 
-                        default='~/datasets/labels.npy')
+    parser.add_argument('--labels_path', type=str,
+                        default='~/datasets/ILSVRC2012_validation_ground_truth.txt')
+    parser.add_argument('--mappings_path', type=str, default='~/datasets/mappings.txt')
     parser.add_argument('--batch_size', type=int, default=128)
     args = parser.parse_args()
     run(args)
