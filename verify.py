@@ -61,12 +61,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='SimCLR verifier')
     parser.add_argument('pth_path', type=str,
                         help='path of the input checkpoint file')
-    parser.add_argument('--device', type=str, default='cpu')
+    parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--images_path', type=str,
                         default='~/datasets/ILSVRC2012_img_val')
     parser.add_argument('--labels_path', type=str,
                         default='~/datasets/ILSVRC2012_validation_ground_truth.txt')
-    parser.add_argument('--mappings_path', type=str, default='~/datasets/mappings.txt')
-    parser.add_argument('--batch_size', type=int, default=128)
+    parser.add_argument('--mappings_path', type=str, default=None)
+    parser.add_argument('--batch_size', type=int, default=64)
     args = parser.parse_args()
     run(args)
