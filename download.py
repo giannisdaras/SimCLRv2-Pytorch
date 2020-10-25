@@ -5,6 +5,7 @@ from math import ceil
 import requests
 from tqdm import tqdm
 
+# r{size_of_resnet}_{times_width}_{selective_kernel_networks}
 available_simclr_models = ['r50_1x_sk0', 'r50_1x_sk1', 'r50_2x_sk0', 'r50_2x_sk1',
                            'r101_1x_sk0', 'r101_1x_sk1', 'r101_2x_sk0', 'r101_2x_sk1',
                            'r152_1x_sk0', 'r152_1x_sk1', 'r152_2x_sk0', 'r152_2x_sk1', 'r152_3x_sk1']
