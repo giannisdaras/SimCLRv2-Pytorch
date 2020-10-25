@@ -1,0 +1,10 @@
+h5py
+scipy
+Pillow
+torchvision
+tqdm
+torch
+requests
+numpy
+matplotlib
+tensorflow==1.15
