@@ -9,14 +9,14 @@ from torchvision.datasets import ImageNet
 from resnet import get_resnet, name_to_params
 from dataloader import ImageNetEval
 import yaml
-
+import torch.optim as optim
 
 @torch.no_grad()
 def evaluate(config):
     files = config['files']
     dataset = ImageNetEval(files['images_path'], files['labels_path'],
                            files['mappings_path'])
-    data_loader = DataLoader(dataset, batch_size=config['batch_size'],
+    data_loader = DataLoader(dataset, batch_size=config['evaluate']['batch_size'],
                              shuffle=False, pin_memory=True, num_workers=8)
     model, _ = get_resnet(*name_to_params(files['checkpoint']))
     model.load_state_dict(torch.load(files['checkpoint'])['resnet'])
@@ -39,7 +39,31 @@ def evaluate(config):
     print(f'Accuracy: {total_correct / len(dataset) * 100}')
 
 
+def train(config):
+    t_config = config['train']
+    files = config['files']
+    dataset = ImageNetEval(files['images_path'], files['labels_path'],
+                           files['mappings_path'])
+    data_loader = DataLoader(dataset, batch_size=config['train']['batch_size'],
+                             shuffle=True, pin_memory=True, num_workers=8)
+    model, _ = get_resnet(*name_to_params(files['checkpoint']))
+    optimizer = optim.Adam(model.fc.parameters(), lr=t_config['lr'],
+                           betas=(t_config['beta1'], t_config['beta2']))
+    model.load_state_dict(torch.load(files['checkpoint'])['resnet'])
+    model = model.to(config['device']).train()
+    loss_fn = torch.nn.CrossEntropyLoss()
+    loss = 'NA'
+    for i in tqdm(range(t_config['epochs'])):
+        for images, labels in tqdm(data_loader, pbar=f'Loss: {loss}'):
+            _, pred = model(images.to(config['device']), apply_fc=True)
+            loss = loss_fn(pred, labels)
+            loss.backward()
+            optimizer.step()
+
+
+
 if __name__ == '__main__':
     with open('config.yml') as file:
         config = yaml.safe_load(file)
-    evaluate(config)
+    # evaluate(config)
+    train(config)
